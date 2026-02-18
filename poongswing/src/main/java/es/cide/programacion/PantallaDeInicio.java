@@ -1,8 +1,12 @@
 package es.cide.programacion;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,9 +30,10 @@ public class PantallaDeInicio {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // establece el tamaño de la ventana
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // cierra programa al cerrar ventana
         frame.setResizable(false); // esto sirve para que no pueda el usuario modificar la ventana
-        frame.setLayout(new GridLayout(2, 2, 15, 15)); // divide en 4 cuadrantes (2x2) con separacion de 15px
+        frame.setLayout(new GridLayout(1, 1, 15, 15)); // divide en 4 cuadrantes (2x2) con separacion de 15px
 
         JPanel panel = new JPanel();
+        panel.setBackground(Color.CYAN);
 
         // Usamos GridBagLayout que permite un control más preciso de la posición y
         // tamaño de los componentes
@@ -40,32 +45,57 @@ public class PantallaDeInicio {
         JLabel text1 = new JLabel("Introduce el nombre del jugador 1");
         JLabel text2 = new JLabel("Introduce el nombre del jugador 2");
         JTextField user1 = new JTextField(20);
+        player1 = user1.getText();
         JTextField user2 = new JTextField(20);
+        player2 = user2.getText();
 
         JButton begin = new JButton("Pulsa para Comenzar");
+
+        begin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
 
         frame.add(panel);
         gbc.gridx = 0; // Columna 0
         gbc.gridy = 0; // Fila 0
+        gbc.weightx = 3;
         panel.add(text1, gbc);
 
         gbc.gridx = 0; // Columna 0
         gbc.gridy = 1; // Fila 1
+        gbc.weightx = 0;
         panel.add(user1, gbc);
 
         gbc.gridx = 2; // Columna 2
         gbc.gridy = 0; // Fila 0
+        gbc.weightx = 3;
         panel.add(text2, gbc);
 
         gbc.gridx = 2; // Columna 2
         gbc.gridy = 1; // Fila 1
+        gbc.weightx = 0;
         panel.add(user2, gbc);
 
         gbc.gridx = 1; // Columna 1
         gbc.gridy = 2; // Fila 2
+        gbc.weightx = 0;
         panel.add(begin, gbc);
 
         frame.setVisible(true); // hace visible la ventana
 
+    }
+
+    private static JTextField user1, user2;
+    private static String player1, player2;
+
+    public String getPlayer1() {
+        return player1;
+    }
+
+    public String getPlayer2() {
+        return player2;
     }
 }
