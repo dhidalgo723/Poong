@@ -6,14 +6,13 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class POong extends JPanel implements ActionListener {
 
     private int x = 750, y = 450;
-    private double dx = 3, dy = 2;
+    private double dx = 3, dy = 3;
     public static int rec1y = 100, rec1x = 30;
     public static int rec2y = 100, rec2x = 1470;
     public static int rec1w = 25, rec1h = 100;
@@ -38,22 +37,22 @@ public class POong extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // limpia el panel antes de redibujar
 
-        // dibuja la pelota
+        // pelota
         Graphics2D ball = (Graphics2D) g;
         ball.setColor(Color.RED); // color rojo
         ball.fillOval(x, y, RADI * 2, RADI * 2); // dibuja circulo
 
-        // dibuja la pala del jugador 1 (izquierda)
+        // pala izquierda
         Graphics2D rec1 = (Graphics2D) g;
         rec1.setColor(Color.black);
         rec1.fillRect(rec1x, rec1y, rec1w, rec1h);
 
-        // dibuja la pala del jugador 2 (derecha)
+        // pala derecha
         Graphics2D rec2 = (Graphics2D) g;
         rec2.setColor(Color.black);
         rec2.fillRect(rec2x, rec2y, rec2w, rec2h);
 
-        // dibuja la linea divisoria central (malla)
+        // simula una malla
         Graphics2D red = (Graphics2D) g;
         red.setColor(Color.white); // color blanco
         red.fillRect(getWidth() / 2 - 2, 0, 4, getHeight()); // linea vertical en el centro
@@ -96,41 +95,37 @@ public class POong extends JPanel implements ActionListener {
         DIA = RADI * 2; // diametro de la pelota
 
         // detecta colision con la pala izquierda
-        if (x <= rec1derecha && derecha >= rec1x && abajo >= rec1y && y <= rec1abajo) {
+        if (x < rec1derecha && derecha > rec1x && abajo > rec1y && y < rec1abajo) {
             dx = -dx; // invierte la direccion horizontal
             x = rec1derecha; // ajusta la posicion para que no se quede pegada
 
-            // incrementa la velocidad en un 5% cada vez que toca una pala
-            dx = dx * 1.05;
-            dy = dy * 1.05;
+            // incrementa la velocidad cada que toca una pala
+            dx = dx * 1.5;
+            dy = dy * 1.5;
         }
 
-        // detecta colision con la pala derecha
-        if (derecha >= rec2x && x <= rec2derecha && abajo >= rec2y && y <= rec2abajo) {
-            dx = -dx; // invierte la direccion horizontal
-            x = rec2x - DIA; // ajusta la posicion para que no se quede pegada
-
-            // incrementa la velocidad en un 5% cada vez que toca una pala
-            dx = dx * 1.05;
-            dy = dy * 1.05;
+        // lo mismo pero con la pala derecha
+        if (derecha > rec2x && x < rec2derecha && abajo > rec2y && y < rec2abajo) {
+            dx = -dx;
+            x = rec2x - DIA;
+            dx = dx * 1.5;
+            dy = dy * 1.5;
         }
 
         // si la pelota sale por el borde derecho, punto para jugador 1
-        if (derecha >= getWidth()) {
+        if (derecha > getWidth()) {
             points1++; // incrementa puntos del jugador 1
             restartBall(); // reinicia la pelota al centro
-            win(); // verifica si alguien gano
         }
 
-        // si la pelota sale por el borde izquierdo, punto para jugador 2
-        if (x <= 0) {
-            points2++; // incrementa puntos del jugador 2
-            restartBall(); // reinicia la pelota al centro
-            win(); // verifica si alguien gano
+        // lo mismo pero con la pala derecha
+        if (x < 0) {
+            points2++;
+            restartBall();
         }
 
         // detecta colision con los bordes superior e inferior
-        if (abajo >= getHeight() || y <= 0) {
+        if (abajo > getHeight() || y < 0) {
             dy = -dy; // invierte la direccion vertical
         }
 
@@ -142,17 +137,17 @@ public class POong extends JPanel implements ActionListener {
             rec1y = getHeight() - rec1h; // no puede bajar mas abajo
         }
 
-        // limita el movimiento de la pala derecha
+        // lo mismo pero con la pala derecha
         if (rec2y < 0) {
-            rec2y = 0; // no puede subir mas arriba
+            rec2y = 0;
         }
         if (rec2abajo > getHeight()) {
-            rec2y = getHeight() - rec2h; // no puede bajar mas abajo
+            rec2y = getHeight() - rec2h;
         }
 
         // actualiza la posicion de la pelota
-        x += (int) dx;
-        y += (int) dy;
+        x += dx;
+        y += dy;
 
         // redibuja el panel
         repaint();
@@ -171,64 +166,9 @@ public class POong extends JPanel implements ActionListener {
             dx = -3;
         }
         if (dy > 0) {
-            dy = 2;
+            dy = 3;
         } else {
-            dy = -2;
+            dy = -3;
         }
-    }
-
-    // verifica si algun jugador llego a 10 puntos
-    private void win() {
-        if (points1 >= 10 || points2 >= 10) {
-            timer.stop(); // detiene el juego
-
-            // determina el ganador
-            String ganador = (points1 >= 10) ? Main.getPlayer1() : Main.getPlayer2();
-
-            // muestra dialogo con opciones
-            Object[] opciones = {"Jugar de Nuevo", "Salir"};
-            int respuesta = JOptionPane.showOptionDialog(
-                    this,
-                    "¡" + ganador + " ha ganado!\n\n¿Que deseas hacer?",
-                    "Fin del Juego",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.INFORMATION_MESSAGE,
-                    null,
-                    opciones,
-                    opciones[0]
-            );
-
-            // si elige jugar de nuevo
-            if (respuesta == JOptionPane.YES_OPTION) {
-                reiniciarJuego();
-            } // si elige salir o cierra el dialogo
-            else {
-                System.exit(0); // cierra el programa
-            }
-        }
-    }
-
-    // reinicia el juego completo
-    private void reiniciarJuego() {
-        // resetea los puntos
-        points1 = 0;
-        points2 = 0;
-
-        // resetea la posicion de la pelota
-        x = 750;
-        y = 450;
-
-        // resetea la velocidad
-        dx = 3;
-        dy = 2;
-
-        // resetea la posicion de las palas (como al inicio)
-        rec1y = 100;
-        rec1x = 30;
-        rec2y = 100;
-        rec2x = 1470;
-
-        // reinicia el timer
-        timer.start();
     }
 }

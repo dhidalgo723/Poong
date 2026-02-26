@@ -75,7 +75,7 @@ public class Main {
         // campo de texto para el nombre del jugador 1
         JTextField user1 = new JTextField(20); // 20 columnas de ancho
         user1.setFont(CanadaGothic);
-        user1.setText("Player 1"); // texto por defecto
+        user1.setText(""); // texto por defecto
 
         // etiqueta jugador 2
         JLabel text2 = new JLabel("Nombre Player 2:");
@@ -85,7 +85,7 @@ public class Main {
         // campo de texto para el nombre del jugador 2
         JTextField user2 = new JTextField(20); // 20 columnas de ancho
         user2.setFont(CanadaGothic);
-        user2.setText("Player 2"); // texto por defecto
+        user2.setText(""); // texto por defecto
 
         // boton para comenzar el juego
         JButton begin = new JButton("Pulsa para comenzar el juego");
@@ -209,7 +209,7 @@ public class Main {
             public void keyPressed(KeyEvent e) {
                 char key1 = e.getKeyChar();
 
-                // controles jugador 1 (w para arriba, s para abajo)
+                // controles jugador 1, w para arriba, s para abajo
                 if (key1 == 'w' || key1 == 'W') {
                     POong.rec1y = POong.rec1y - 25; // sube la pala izquierda
                 } else if (key1 == 's' || key1 == 'S') {
@@ -218,7 +218,7 @@ public class Main {
 
                 int key2 = e.getKeyCode();
 
-                // controles jugador 2 (flechas arriba y abajo)
+                // controles jugador 2, flechas arriba y abajo
                 if (key2 == KeyEvent.VK_UP) {
                     POong.rec2y = POong.rec2y - 25; // sube la pala derecha
                 } else if (key2 == KeyEvent.VK_DOWN) {
